@@ -7,7 +7,8 @@ const {
     updateOrderStatus, 
     getSingleOrder, 
     deleteOrder,
-    getMyOrders // 💡 Dodajte uvoz ove funkcije iz kontrolera
+    getMyOrders,
+    trackOrder 
 } = require('../controllers/orderController');
 const { protect, optionalProtect } = require('../controllers/authController'); // Uvoz za zaštitu
 
@@ -15,6 +16,7 @@ const { protect, optionalProtect } = require('../controllers/authController'); /
 router.route('/')
     .post(optionalProtect, newOrder); // 💡 OPTIONALPROTECT postavlja req.user ako je korisnik prijavljen
 
+    router.get('/track/:orderId', trackOrder);
 // ----------------------------------------------------
 // RUTIRANJE ZA KUPCE (Dashboard)
 // ----------------------------------------------------

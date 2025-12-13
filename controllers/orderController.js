@@ -218,3 +218,48 @@ exports.getMyOrders = async (req, res) => {
         });
     }
 };
+// Add this function to your orderController.js
+// Place it after getMyOrders function
+
+// @desc      Track order by ID (Public - no auth required)
+// @route     GET /api/v1/orders/track/:orderId
+// @access    Public
+exports.trackOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.orderId)
+            .populate({
+                path: 'orderItems.product',
+                select: 'name price image category'
+            });
+        
+        if (!order) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Order not found' 
+            });
+        }
+        
+        // Return safe order information (don't expose user ID or sensitive data)
+        res.status(200).json({
+            success: true,
+            data: {
+                orderId: order._id,
+                orderStatus: order.orderStatus,
+                createdAt: order.createdAt,
+                deliveredAt: order.deliveredAt,
+                orderItems: order.orderItems,
+                totalPrice: order.totalPrice,
+                shippingAddress: order.shippingAddress,
+                paymentMethod: order.paymentMethod
+                // Note: We're NOT exposing order.user (user ID) for privacy
+            }
+        });
+    } catch (error) {
+        console.error('Track order error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error while tracking order',
+            error: error.message 
+        });
+    }
+};
