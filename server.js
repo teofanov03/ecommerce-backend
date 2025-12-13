@@ -1,4 +1,4 @@
-// server.js - Ažuriranje
+// server.js - ISPRAVLJENO AŽURIRANJE
 
 const express = require('express');
 const dotenv = require('dotenv');
@@ -10,6 +10,11 @@ const userRouter = require('./routes/userRoutes');
 const cloudinary = require('cloudinary'); // Uvoz ruta
 const cors = require('cors');
 
+// 🛑 ISPRAVKA 1: Lista dozvoljenih domena mora imati navodnike na svakom elementu
+const allowedOrigins = [
+    'http://localhost:5173', // Lokalni domen (SADA POD NAVODNICIMA)
+    'https://ecommerce-frontend-jnlf.vercel.app', // 🛑 PRODUKCIONI DOMEN
+];
 
 dotenv.config();
 cloudinary.config({
@@ -20,15 +25,25 @@ cloudinary.config({
 connectDB(); 
 
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:5173', // Dozvolite samo Frontend-u pristup
-    credentials: true, // Dozvolite slanje cookies-a/credentials (biće bitno za Admin Login)
-}));
 app.use(express.json()); // Middleware za JSON body
+
+// 🛑 ISPRAVKA 2: Korišćenje ispravne CORS konfiguracije sa listom dozvoljenih domena
+app.use(cors({
+    origin: (origin, callback) => {
+        // Omogućite zahteve bez 'origin' (npr. mobilne aplikacije, curl)
+        // I proverite da li je domen na listi dozvoljenih
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true, // Dozvolite slanje cookies-a/credentials (biće bitno za Login)
+}));
 
 // ---------------------------------
 // PRIKLJUČIVANJE RUTA
-// Koristićemo v1 (version 1) za API, što je dobra praksa
+// Koristićemo v1 (version 1) za API
 app.use('/api/v1/products', productRoutes); 
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/user', userRouter);
