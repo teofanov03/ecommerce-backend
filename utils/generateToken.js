@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const generateToken = (id) => {
     // Koristimo .env varijablu za tajni ključ
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d', // Trajanje tokena
+        expiresIn: '7d', // Trajanje tokena
     });
 };
 
