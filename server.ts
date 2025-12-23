@@ -1,7 +1,7 @@
 import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js'; 
-import productRoutes from './routes/productRoutes';
+import productRoutes from './routes/productRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import userRouter from './routes/userRoutes.js';

@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import Product from '../models/Product';
+import Product from '../models/Product.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 // Definisanje interfejsa za Query parametre (da TS zna za page, limit, category...)
